@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public interface CategoryService {
     CategoryDto createCategory(CategoryDto categoryDto);
+    CategoryDto createCategoryWithProducts(CategoryDto categoryDto);
     CategoryDto updateCategory(CategoryDto categoryDto, Long id);
     void deleteCategory(Long id);
     CategoryDto getCategoryById(Long id);

@@ -34,6 +34,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
         Category category = mapper.map(categoryDto, Category.class);
+        return mapper.map(categoryRepository.save(category), CategoryDto.class);
+    }
+
+    @Override
+    public CategoryDto createCategoryWithProducts(CategoryDto categoryDto) {
+
+        Category category = mapper.map(categoryDto, Category.class);
 
         List<Product> products = new ArrayList<>();
 
@@ -48,10 +55,9 @@ public class CategoryServiceImpl implements CategoryService {
             product.getCategories().add(category);
         }
 
-        category = categoryRepository.save(category);
-
         return mapper.map(category, CategoryDto.class);
     }
+
 
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto, Long id) {

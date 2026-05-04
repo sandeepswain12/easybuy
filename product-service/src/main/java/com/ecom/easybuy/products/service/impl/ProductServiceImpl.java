@@ -35,29 +35,31 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto createProduct(ProductDto productDto) {
+        Product product = mapper.map(productDto, Product.class);
+        return mapper.map(productRepository.save(product), ProductDto.class);
+    }
 
+    @Override
+    public ProductDto createProductWithCategories(ProductDto productDto) {
         Product product = mapper.map(productDto, Product.class);
 
         List<Category> categories = new ArrayList<>();
 
-        for (Long categoryId : productDto.getCategoryIds()) {
+        for(Long categoryId : productDto.getCategoryIds()) {
             Category category = categoryRepository.findById(categoryId)
                     .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
             categories.add(category);
         }
 
-        // set categories to product
         product.setCategories(categories);
 
-        // maintain bidirectional mapping
-        for (Category category : categories) {
+        for(Category category : categories) {
             category.getProducts().add(product);
         }
 
-        product = productRepository.save(product);
-
-        return mapper.map(product, ProductDto.class);
+        return mapper.map(productRepository.save(product), ProductDto.class);
     }
+
 
     @Override
     public ProductDto updateProduct(ProductDto productDto, UUID id) {

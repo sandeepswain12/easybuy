@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public interface ProductService {
     ProductDto createProduct(ProductDto productDto);
+    ProductDto createProductWithCategories(ProductDto productDto);
     ProductDto updateProduct(ProductDto productDto, UUID id);
     void deleteProduct(UUID id);
     ProductDto getProductById(UUID id);
