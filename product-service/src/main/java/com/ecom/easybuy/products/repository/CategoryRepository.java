@@ -1,7 +1,6 @@
 package com.ecom.easybuy.products.repository;
 
 import com.ecom.easybuy.products.entity.Category;
-import com.ecom.easybuy.products.entity.Products;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

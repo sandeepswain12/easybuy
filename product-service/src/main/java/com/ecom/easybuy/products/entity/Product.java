@@ -1,5 +1,6 @@
 package com.ecom.easybuy.products.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Products {
+public class Product {
 
     @Id
     @GeneratedValue
@@ -36,5 +37,6 @@ public class Products {
     @ManyToMany(mappedBy = "products")
     private List<Category> categories = new ArrayList<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Review> reviews = new ArrayList<>();
 }

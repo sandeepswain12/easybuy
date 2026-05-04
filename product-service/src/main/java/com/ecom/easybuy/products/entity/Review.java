@@ -1,5 +1,6 @@
 package com.ecom.easybuy.products.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,5 +22,6 @@ public class Review {
     private Double rating;
 
     @ManyToOne
-    private Products product;
+    @JsonIgnore
+    private Product product;
 }

@@ -24,5 +24,5 @@ public class Category {
     private String title;
 
     @ManyToMany
-    private List<Products> products = new ArrayList<>();
+    private List<Product> products = new ArrayList<>();
 }

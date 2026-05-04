@@ -21,6 +21,6 @@ public class ProductDto {
     private Integer discount;
     private Boolean live;
     private List<String> productImages;
-    private List<CategoryDto> categoryTitles;
+    private List<Long> categoryIds;
     private List<ReviewDto> reviews;
 }
