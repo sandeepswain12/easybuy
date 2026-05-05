@@ -18,78 +18,107 @@ import java.util.UUID;
 @Service
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
+    @Override
+    public List<CategoryDto> getAllCategories() {
+        return List.of();
+    }
 
-    private final CategoryRepository categoryRepository;
-    private final ProductRepository productRepository;
-    private final ModelMapper mapper;
+    @Override
+    public CategoryDto getCategoryById(Long categoryId) {
+        return null;
+    }
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository,
-                               ProductRepository productRepository,
-                               ModelMapper mapper) {
-        this.categoryRepository = categoryRepository;
-        this.productRepository = productRepository;
-        this.mapper = mapper;
+    @Override
+    public List<CategoryDto> getCategoriesByProductId(UUID productId) {
+        return List.of();
     }
 
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
-        Category category = mapper.map(categoryDto, Category.class);
-        return mapper.map(categoryRepository.save(category), CategoryDto.class);
+        return null;
     }
 
     @Override
-    public CategoryDto createCategoryWithProducts(CategoryDto categoryDto) {
-
-        Category category = mapper.map(categoryDto, Category.class);
-
-        List<Product> products = new ArrayList<>();
-
-        for (UUID productId : categoryDto.getProductIds()){
-            Product product = productRepository.findById(productId).orElseThrow(()->new ResourceNotFoundException("Product not found"));
-            products.add(product);
-        }
-
-        category.setProducts(products);
-
-        for (Product product : products) {
-            product.getCategories().add(category);
-        }
-
-        return mapper.map(category, CategoryDto.class);
-    }
-
-
-    @Override
-    public CategoryDto updateCategory(CategoryDto categoryDto, Long id) {
-        Category exCategory = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-//        exCategory.setId(categoryDto.getId());
-        exCategory.setTitle(categoryDto.getTitle());
-        //exCategory.setProducts(categoryDto.getProducts());
-        return mapper.map(categoryRepository.save(exCategory), CategoryDto.class);
+    public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto) {
+        return null;
     }
 
     @Override
-    public void deleteCategory(Long id) {
-        categoryRepository.deleteById(id);
+    public void deleteCategory(Long categoryId) {
+
     }
 
-    @Override
-    public CategoryDto getCategoryById(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-        return mapper.map(category, CategoryDto.class);
-    }
-
-    @Override
-    public List<CategoryDto> getAllCategories() {
-        return categoryRepository.findAll().stream()
-                .map(category -> mapper.map(category, CategoryDto.class))
-                .toList();
-    }
-
-    @Override
-    public List<CategoryDto> getCategoriesByProduct(UUID productId) {
-        return categoryRepository.findByProductId(productId).stream()
-                .map(category -> mapper.map(category, CategoryDto.class))
-                .toList();
-    }
+//    private final CategoryRepository categoryRepository;
+//    private final ProductRepository productRepository;
+//    private final ModelMapper mapper;
+//
+//    public CategoryServiceImpl(CategoryRepository categoryRepository,
+//                               ProductRepository productRepository,
+//                               ModelMapper mapper) {
+//        this.categoryRepository = categoryRepository;
+//        this.productRepository = productRepository;
+//        this.mapper = mapper;
+//    }
+//
+//    @Override
+//    public CategoryDto createCategory(CategoryDto categoryDto) {
+//        Category category = mapper.map(categoryDto, Category.class);
+//        return mapper.map(categoryRepository.save(category), CategoryDto.class);
+//    }
+//
+//    @Override
+//    public CategoryDto createCategoryWithProducts(CategoryDto categoryDto) {
+//
+//        Category category = mapper.map(categoryDto, Category.class);
+//
+//        List<Product> products = new ArrayList<>();
+//
+//        for (UUID productId : categoryDto.getProductIds()){
+//            Product product = productRepository.findById(productId).orElseThrow(()->new ResourceNotFoundException("Product not found"));
+//            products.add(product);
+//        }
+//
+//        category.setProducts(products);
+//
+//        for (Product product : products) {
+//            product.getCategories().add(category);
+//        }
+//
+//        return mapper.map(category, CategoryDto.class);
+//    }
+//
+//
+//    @Override
+//    public CategoryDto updateCategory(CategoryDto categoryDto, Long id) {
+//        Category exCategory = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+////        exCategory.setId(categoryDto.getId());
+//        exCategory.setTitle(categoryDto.getTitle());
+//        //exCategory.setProducts(categoryDto.getProducts());
+//        return mapper.map(categoryRepository.save(exCategory), CategoryDto.class);
+//    }
+//
+//    @Override
+//    public void deleteCategory(Long id) {
+//        categoryRepository.deleteById(id);
+//    }
+//
+//    @Override
+//    public CategoryDto getCategoryById(Long id) {
+//        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+//        return mapper.map(category, CategoryDto.class);
+//    }
+//
+//    @Override
+//    public List<CategoryDto> getAllCategories() {
+//        return categoryRepository.findAll().stream()
+//                .map(category -> mapper.map(category, CategoryDto.class))
+//                .toList();
+//    }
+//
+//    @Override
+//    public List<CategoryDto> getCategoriesByProduct(UUID productId) {
+//        return categoryRepository.findByProductId(productId).stream()
+//                .map(category -> mapper.map(category, CategoryDto.class))
+//                .toList();
+//    }
 }

@@ -6,9 +6,9 @@ spring:
     port: 8082
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/productdb
-    username: admin
-    password: admin
+    url: jdbc:postgresql://localhost:5433/productdb
+    username: user
+    password: user
     driver-class-name: org.postgresql.Driver
 
     hikari:

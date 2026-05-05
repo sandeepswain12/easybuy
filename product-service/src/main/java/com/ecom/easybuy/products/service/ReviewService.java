@@ -4,11 +4,20 @@ package com.ecom.easybuy.products.service;
 import com.ecom.easybuy.products.dto.ReviewDto;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ReviewService {
-    ReviewDto createReview(ReviewDto reviewDto);
-    ReviewDto updateReview(ReviewDto reviewDto, Long id);
-    void deleteReview(Long id);
-    ReviewDto getReviewById(Long id);
+
     List<ReviewDto> getAllReviews();
+
+    ReviewDto getReviewById(Long reviewId);
+
+    List<ReviewDto> getReviewsByProductId(UUID productId);
+
+    ReviewDto createReview(UUID productId, ReviewDto reviewDto);
+
+    ReviewDto updateReview(Long reviewId, ReviewDto reviewDto);
+
+    void deleteReview(Long reviewId);
 }
+

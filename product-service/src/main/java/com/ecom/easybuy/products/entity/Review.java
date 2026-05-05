@@ -1,27 +1,38 @@
 package com.ecom.easybuy.products.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "reviews")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Review {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String comment;
-    private Double rating;
+    //default assume : x/5
+    private Integer rating;
 
     @ManyToOne
-    @JsonIgnore
-    private Product product;
+    private  Product product;
+
+
+    @CreatedDate
+    private Instant createdAt;
+
+
 }
+
+

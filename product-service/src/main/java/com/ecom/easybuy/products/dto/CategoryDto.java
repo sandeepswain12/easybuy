@@ -1,13 +1,12 @@
 package com.ecom.easybuy.products.dto;
 
-import com.ecom.easybuy.products.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -15,6 +14,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CategoryDto {
     private Long id;
+
+    @NotBlank(message = "title is required")
     private String title;
-    private List<UUID> productIds;
+    private List<ProductDto> products;
 }

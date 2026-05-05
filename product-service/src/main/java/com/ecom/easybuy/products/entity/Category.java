@@ -14,8 +14,8 @@ import java.util.List;
 @Table(name = "categories")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Category {
 
     @Id
@@ -25,4 +25,6 @@ public class Category {
 
     @ManyToMany
     private List<Product> products = new ArrayList<>();
+
 }
+
