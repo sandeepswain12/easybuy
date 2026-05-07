@@ -2,6 +2,8 @@ package com.ecom.easybuy.products.controller;
 
 import com.ecom.easybuy.products.dto.CategoryDto;
 import com.ecom.easybuy.products.service.CategoryService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -17,6 +19,37 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+
+    @GetMapping
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        return ResponseEntity.ok(categoryService.getAllCategories());
+    }
+
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(categoryService.getCategoryById(categoryId));
+    }
+
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<List<CategoryDto>> getCategoriesByProductId(@PathVariable UUID productId) {
+        return ResponseEntity.ok(categoryService.getCategoriesByProductId(productId));
+    }
+
+    @PostMapping
+    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.createCategory(categoryDto));
+    }
+
+    @PutMapping("/{categoryId}")
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long categoryId, @Valid @RequestBody CategoryDto categoryDto) {
+        return ResponseEntity.ok(categoryService.updateCategory(categoryId, categoryDto));
+    }
+
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
+        categoryService.deleteCategory(categoryId);
+        return ResponseEntity.noContent().build();
+    }
 //    @PostMapping
 //    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
 //        CategoryDto createdCategory = categoryService.createCategory(categoryDto);
