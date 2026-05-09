@@ -4,9 +4,11 @@ import com.ecom.easybuy.products.dto.PagedResponse;
 import com.ecom.easybuy.products.dto.ProductDto;
 import com.ecom.easybuy.products.dto.ReviewDto;
 import com.ecom.easybuy.products.service.ProductService;
+import com.ecom.easybuy.products.utils.ProductServiceConstants;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +28,12 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<PagedResponse<ProductDto>> getAllProducts(
-            @RequestParam(defaultValue = "0") @Min(value = 0, message = "page must be greater than or equal to 0") int page,
-            @RequestParam(defaultValue = "12") @Min(value = 1, message = "size must be greater than 0") @Max(value = 100, message = "size must be at most 100") int size
+            @RequestParam(defaultValue = ProductServiceConstants.DEFAULT_PAGE + "") int page,
+            @RequestParam(defaultValue = ProductServiceConstants.DEFAULT_SIZE + "") int size,
+            @RequestParam(defaultValue = ProductServiceConstants.DEFAULT_SORT_BY) String sortBy,
+            @RequestParam(defaultValue = ProductServiceConstants.DEFAULT_SORT_DIR) String sortDir
     ) {
-        return ResponseEntity.ok(productService.getAllProducts(page, size));
+        return ResponseEntity.ok(productService.getAllProducts(page, size, sortBy, sortDir));
     }
 
     @GetMapping("/{productId}")
@@ -89,40 +93,4 @@ public class ProductController {
     public ResponseEntity<java.util.List<String>> getProductImages(@PathVariable UUID productId) {
         return ResponseEntity.ok(productService.getProductImages(productId));
     }
-
-//    @PostMapping
-//    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
-//        ProductDto createdProduct = productService.createProduct(productDto);
-//        return ResponseEntity.ok(createdProduct);
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto productDto, @PathVariable UUID id) {
-//        ProductDto updatedProduct = productService.updateProduct(productDto, id);
-//        return ResponseEntity.ok(updatedProduct);
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteProduct(@PathVariable UUID id) {
-//        productService.deleteProduct(id);
-//        return ResponseEntity.ok().build();
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<List<ProductDto>> getAllProducts() {
-//        List<ProductDto> products = productService.getAllProducts();
-//        return ResponseEntity.ok(products);
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<ProductDto> getProductById(@PathVariable UUID id) {
-//        ProductDto product = productService.getProductById(id);
-//        return ResponseEntity.ok(product);
-//    }
-//
-//    @GetMapping("/category/{categoryId}")
-//    public ResponseEntity<List<ProductDto>> getProductsByCategory(@PathVariable Long categoryId) {
-//        List<ProductDto> products = productService.getProductsByCategory(categoryId);
-//        return ResponseEntity.ok(products);
-//    }
 }

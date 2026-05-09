@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ProductService {
 
     //all products in paginated format
-    PagedResponse<ProductDto> getAllProducts(int page, int size);
+    PagedResponse<ProductDto> getAllProducts(int page, int size, String sortBy, String sortDir);
 
     //product dto by product id
     ProductDto getProductById(UUID productId);
