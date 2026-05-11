@@ -20,7 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class Product {
+public class Product extends  BaseEntity{
 
     @Id
     @GeneratedValue
@@ -47,8 +47,8 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
-    @CreatedDate
-    private Instant createdAt;
+//    @CreatedDate
+//    private Instant createdAt;
 
 
 }

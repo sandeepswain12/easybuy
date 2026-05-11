@@ -1,124 +1,93 @@
 package com.ecom.easybuy.products.service.impl;
 
 import com.ecom.easybuy.products.dto.CategoryDto;
+import com.ecom.easybuy.products.dto.ProductDto;
 import com.ecom.easybuy.products.entity.Category;
-import com.ecom.easybuy.products.entity.Product;
 import com.ecom.easybuy.products.exception.ResourceNotFoundException;
 import com.ecom.easybuy.products.repository.CategoryRepository;
 import com.ecom.easybuy.products.repository.ProductRepository;
 import com.ecom.easybuy.products.service.CategoryService;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
+
+    private final CategoryRepository categoryRepo;
+    private final ProductRepository productRepo;
+
+    public CategoryServiceImpl(CategoryRepository categoryRepo, ProductRepository productRepo) {
+        this.categoryRepo = categoryRepo;
+        this.productRepo = productRepo;
+    }
+
     @Override
     public List<CategoryDto> getAllCategories() {
-        return List.of();
+        return categoryRepo.findAll().stream().map(this::toDto).collect(Collectors.toList());
     }
 
     @Override
     public CategoryDto getCategoryById(Long categoryId) {
-        return null;
+        return toDto(findCategory(categoryId));
     }
 
     @Override
     public List<CategoryDto> getCategoriesByProductId(UUID productId) {
-        return List.of();
+        return categoryRepo.findByProductId(productId).stream().map(this::toDto).collect(Collectors.toList());
     }
 
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
-        return null;
+        Category category = new Category();
+        category.setTitle(categoryDto.getTitle());
+        return toDto(categoryRepo.save(category));
     }
 
     @Override
     public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto) {
-        return null;
+        Category category = findCategory(categoryId);
+        category.setTitle(categoryDto.getTitle());
+        return toDto(categoryRepo.save(category));
     }
 
     @Override
     public void deleteCategory(Long categoryId) {
-
+        Category category = findCategory(categoryId);
+        category.getProducts().forEach(product -> product.getCategories().remove(category));
+        category.getProducts().clear();
+        categoryRepo.save(category);
+        categoryRepo.delete(category);
     }
 
-//    private final CategoryRepository categoryRepository;
-//    private final ProductRepository productRepository;
-//    private final ModelMapper mapper;
-//
-//    public CategoryServiceImpl(CategoryRepository categoryRepository,
-//                               ProductRepository productRepository,
-//                               ModelMapper mapper) {
-//        this.categoryRepository = categoryRepository;
-//        this.productRepository = productRepository;
-//        this.mapper = mapper;
-//    }
-//
-//    @Override
-//    public CategoryDto createCategory(CategoryDto categoryDto) {
-//        Category category = mapper.map(categoryDto, Category.class);
-//        return mapper.map(categoryRepository.save(category), CategoryDto.class);
-//    }
-//
-//    @Override
-//    public CategoryDto createCategoryWithProducts(CategoryDto categoryDto) {
-//
-//        Category category = mapper.map(categoryDto, Category.class);
-//
-//        List<Product> products = new ArrayList<>();
-//
-//        for (UUID productId : categoryDto.getProductIds()){
-//            Product product = productRepository.findById(productId).orElseThrow(()->new ResourceNotFoundException("Product not found"));
-//            products.add(product);
-//        }
-//
-//        category.setProducts(products);
-//
-//        for (Product product : products) {
-//            product.getCategories().add(category);
-//        }
-//
-//        return mapper.map(category, CategoryDto.class);
-//    }
-//
-//
-//    @Override
-//    public CategoryDto updateCategory(CategoryDto categoryDto, Long id) {
-//        Category exCategory = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-////        exCategory.setId(categoryDto.getId());
-//        exCategory.setTitle(categoryDto.getTitle());
-//        //exCategory.setProducts(categoryDto.getProducts());
-//        return mapper.map(categoryRepository.save(exCategory), CategoryDto.class);
-//    }
-//
-//    @Override
-//    public void deleteCategory(Long id) {
-//        categoryRepository.deleteById(id);
-//    }
-//
-//    @Override
-//    public CategoryDto getCategoryById(Long id) {
-//        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-//        return mapper.map(category, CategoryDto.class);
-//    }
-//
-//    @Override
-//    public List<CategoryDto> getAllCategories() {
-//        return categoryRepository.findAll().stream()
-//                .map(category -> mapper.map(category, CategoryDto.class))
-//                .toList();
-//    }
-//
-//    @Override
-//    public List<CategoryDto> getCategoriesByProduct(UUID productId) {
-//        return categoryRepository.findByProductId(productId).stream()
-//                .map(category -> mapper.map(category, CategoryDto.class))
-//                .toList();
-//    }
+    private Category findCategory(Long categoryId) {
+        return categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + categoryId));
+    }
+
+    private CategoryDto toDto(Category category) {
+        CategoryDto dto = new CategoryDto();
+        dto.setId(category.getId());
+        dto.setTitle(category.getTitle());
+        dto.setProducts(category.getProducts() == null ? new ArrayList<>() : category.getProducts().stream().map(product -> {
+            var productDto = new ProductDto();
+            productDto.setId(product.getId());
+            productDto.setTitle(product.getTitle());
+            productDto.setShortDesc(product.getShortDesc());
+            productDto.setLongDesc(product.getLongDesc());
+            productDto.setPrice(product.getPrice());
+            productDto.setDiscount(product.getDiscount());
+            productDto.setLive(product.getLive());
+            productDto.setProductImages(product.getProductImages() == null ? new ArrayList<>() : new ArrayList<>(product.getProductImages()));
+            productDto.setCategories(new ArrayList<>());
+            productDto.setReviews(new ArrayList<>());
+            return productDto;
+        }).collect(Collectors.toList()));
+        return dto;
+    }
 }

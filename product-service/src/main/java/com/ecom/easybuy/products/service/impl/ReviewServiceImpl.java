@@ -1,5 +1,6 @@
 package com.ecom.easybuy.products.service.impl;
 
+import com.ecom.easybuy.products.dto.ProductDto;
 import com.ecom.easybuy.products.dto.ReviewDto;
 import com.ecom.easybuy.products.entity.Product;
 import com.ecom.easybuy.products.entity.Review;
@@ -8,94 +9,101 @@ import com.ecom.easybuy.products.repository.ProductRepository;
 import com.ecom.easybuy.products.repository.ReviewRepository;
 import com.ecom.easybuy.products.service.ReviewService;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class ReviewServiceImpl implements ReviewService {
+
+    private final ReviewRepository reviewRepo;
+    private final ProductRepository productRepo;
+
+    public ReviewServiceImpl(ReviewRepository reviewRepo, ProductRepository productRepo) {
+        this.reviewRepo = reviewRepo;
+        this.productRepo = productRepo;
+    }
+
     @Override
     public List<ReviewDto> getAllReviews() {
-        return List.of();
+        return reviewRepo.findAll().stream().map(this::toDto).collect(Collectors.toList());
     }
 
     @Override
     public ReviewDto getReviewById(Long reviewId) {
-        return null;
+        return toDto(findReview(reviewId));
     }
 
     @Override
     public List<ReviewDto> getReviewsByProductId(UUID productId) {
-        return List.of();
+        return reviewRepo.findByProduct_Id(productId).stream().map(this::toDto).collect(Collectors.toList());
     }
 
     @Override
     public ReviewDto createReview(UUID productId, ReviewDto reviewDto) {
-        return null;
+        Product product = findProduct(productId);
+        Review review = new Review();
+        review.setTitle(reviewDto.getTitle());
+        review.setComment(reviewDto.getComment());
+        review.setRating(reviewDto.getRating());
+        review.setProduct(product);
+        return toDto(reviewRepo.save(review));
     }
 
     @Override
     public ReviewDto updateReview(Long reviewId, ReviewDto reviewDto) {
-        return null;
+        Review review = findReview(reviewId);
+        review.setTitle(reviewDto.getTitle());
+        review.setComment(reviewDto.getComment());
+        review.setRating(reviewDto.getRating());
+        return toDto(reviewRepo.save(review));
     }
 
     @Override
     public void deleteReview(Long reviewId) {
-
+        Review review = findReview(reviewId);
+        reviewRepo.delete(review);
     }
 
-//    private final ReviewRepository reviewRepository;
-//    private final ProductRepository productRepository;
-//    private final ModelMapper mapper;
-//
-//    public ReviewServiceImpl(
-//            ReviewRepository reviewRepository,
-//            ProductRepository productRepository,
-//            ModelMapper mapper) {
-//        this.reviewRepository = reviewRepository;
-//        this.productRepository = productRepository;
-//        this.mapper = mapper;
-//    }
-//
-//    @Override
-//    public ReviewDto createReview(ReviewDto reviewDto) {
-//        Review review = mapper.map(reviewDto, Review.class);
-//        UUID productId = reviewDto.getProductId();
-//
-//        Product product = productRepository.findById(productId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-//        review.setProduct(product);
-//        return mapper.map(reviewRepository.save(review), ReviewDto.class);
-//    }
-//
-//    @Override
-//    public ReviewDto updateReview(ReviewDto reviewDto, Long id) {
-//        Review exReview = reviewRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Review not found"));
-//        exReview.setTitle(reviewDto.getTitle());
-//        exReview.setComment(reviewDto.getComment());
-//        exReview.setRating(reviewDto.getRating());
-//        return mapper.map(reviewRepository.save(exReview), ReviewDto.class);
-//    }
-//
-//    @Override
-//    public void deleteReview(Long id) {
-//        Review exReview = reviewRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Review not found"));
-//        reviewRepository.delete(exReview);
-//    }
-//
-//    @Override
-//    public ReviewDto getReviewById(Long id) {
-//        Review review = reviewRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Review not found"));
-//        return mapper.map(review, ReviewDto.class);
-//    }
-//
-//    @Override
-//    public List<ReviewDto> getAllReviews() {
-//        return reviewRepository.findAll().stream()
-//                .map(review -> mapper.map(review, ReviewDto.class))
-//                .toList();
-//    }
+    private Product findProduct(UUID productId) {
+        return productRepo.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + productId));
+    }
+
+    private Review findReview(Long reviewId) {
+        return reviewRepo.findById(reviewId)
+                .orElseThrow(() -> new ResourceNotFoundException("Review not found: " + reviewId));
+    }
+
+    private ReviewDto toDto(Review review) {
+        ReviewDto dto = new ReviewDto();
+        dto.setId(review.getId());
+        dto.setTitle(review.getTitle());
+        dto.setComment(review.getComment());
+        dto.setRating(review.getRating());
+        if (review.getProduct() != null) {
+            dto.setProduct(toProductDto(review.getProduct()));
+        }
+        return dto;
+    }
+
+    private ProductDto toProductDto(Product product) {
+        ProductDto dto = new ProductDto();
+        dto.setId(product.getId());
+        dto.setTitle(product.getTitle());
+        dto.setShortDesc(product.getShortDesc());
+        dto.setLongDesc(product.getLongDesc());
+        dto.setPrice(product.getPrice());
+        dto.setDiscount(product.getDiscount());
+        dto.setLive(product.getLive());
+        dto.setProductImages(product.getProductImages() == null ? new ArrayList<>() : new ArrayList<>(product.getProductImages()));
+        dto.setCategories(new ArrayList<>());
+        dto.setReviews(new ArrayList<>());
+        return dto;
+    }
 }
+

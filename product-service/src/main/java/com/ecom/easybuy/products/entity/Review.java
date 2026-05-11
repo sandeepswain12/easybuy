@@ -15,7 +15,7 @@ import java.time.Instant;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Review {
+public class Review extends  BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +29,8 @@ public class Review {
     private  Product product;
 
 
-    @CreatedDate
-    private Instant createdAt;
+//    @CreatedDate
+//    private Instant createdAt;
 
 
 }

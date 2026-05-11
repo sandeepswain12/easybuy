@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    @Query("SELECT c FROM Category c JOIN c.products p WHERE p.id = :productId")
+    @Query("SELECT c FROM Category c JOIN FETCH c.products p WHERE p.id = :productId")
     List<Category> findByProductId(@Param("productId") UUID productId);
 }
