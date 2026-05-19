@@ -1,4 +1,8 @@
 package com.ecom.easybuy.cart_order.dto;
 
-public class CheckoutRequest {
+import jakarta.validation.constraints.NotBlank;
+
+public record CheckoutRequest(
+        @NotBlank String shippingAddress,
+        String paymentMethod) {
 }

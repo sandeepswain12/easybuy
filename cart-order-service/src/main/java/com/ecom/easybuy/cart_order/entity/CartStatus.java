@@ -1,4 +1,6 @@
 package com.ecom.easybuy.cart_order.entity;
 
-public class CartStatus {
+public enum CartStatus {
+    ACTIVE,
+    CHECKED_OUT
 }

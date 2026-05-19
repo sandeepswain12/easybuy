@@ -1,4 +1,8 @@
 package com.ecom.easybuy.cart_order.dto;
 
-public class ReserveStockRequest {
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+public record ReserveStockRequest(
+        @NotNull @Positive Integer quantity) {
 }

@@ -1,4 +1,12 @@
 package com.ecom.easybuy.cart_order.exception;
 
-public class ExternalServiceException {
+public class ExternalServiceException extends RuntimeException {
+
+    public ExternalServiceException(String message) {
+        super(message);
+    }
+
+    public ExternalServiceException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
