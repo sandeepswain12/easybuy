@@ -18,8 +18,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
-        <module name="service-discorvery" />
+        <module name="config-server" />
         <module name="common-service" />
+        <module name="service-discorvery" />
       </profile>
       <profile name="Annotation profile for cart-order-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -43,6 +44,7 @@
       <module name="api-gateway" options="-parameters" />
       <module name="cart-order-service" options="-parameters" />
       <module name="common-service" options="-parameters" />
+      <module name="config-server" options="-parameters" />
       <module name="inventory-service" options="-parameters" />
       <module name="notifications-service" options="-parameters" />
       <module name="payment-service" options="-parameters" />
