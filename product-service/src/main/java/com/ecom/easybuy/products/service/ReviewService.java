@@ -1,6 +1,5 @@
 package com.ecom.easybuy.products.service;
 
-
 import com.ecom.easybuy.products.dto.ReviewDto;
 
 import java.util.List;
@@ -20,4 +19,3 @@ public interface ReviewService {
 
     void deleteReview(Long reviewId);
 }
-

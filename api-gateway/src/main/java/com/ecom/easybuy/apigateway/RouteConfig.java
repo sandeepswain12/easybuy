@@ -5,6 +5,9 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+
+import java.time.Duration;
 
 @Configuration
 public class RouteConfig {
@@ -12,34 +15,54 @@ public class RouteConfig {
 
     private final String productServiceId;
     private final String cartOrderServiceId;
+    private final String usersServiceId;
+    private final String inventoryServiceId;
 
-    public RouteConfig(@Value("${product.service.id}") String productServiceId, @Value("${cartorder.service.id}") String cartOrderServiceId) {
+    public RouteConfig(
+            @Value("${PRODUCT_SERVICE_NAME:PRODUCT-SERVICE}") String productServiceId,
+            @Value("${CARD_ORDER_SERVICE_NAME:CART-ORDER-SERVICE}") String cartOrderServiceId,
+            @Value("${USERS_SERVICE_NAME:users-service}") String usersServiceId,
+            @Value("${INVENTORY_SERVICE_NAME:INVENTORY-SERVICE}") String inventoryServiceId) {
         this.productServiceId = productServiceId;
         this.cartOrderServiceId = cartOrderServiceId;
+        this.usersServiceId = usersServiceId;
+        this.inventoryServiceId = inventoryServiceId;
+        System.out.println(this.productServiceId);
+        System.out.println(this.cartOrderServiceId);
     }
 
     @Bean
     public RouteLocator route(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("product-route", route ->
-                        route
 
-                                .path("/products/**")
-                                .filters(f -> f
-                                        .addRequestHeader("x-api-gateway", "value from api gateway")
+                .route("product-route", route -> route
+                        .path("/products/**").filters(f -> f.addRequestHeader("x-api-gateway", "value from api gateway")
+                                .circuitBreaker(c -> c.setName("productCircuitBreaker").setFallbackUri("forward:/product-fallback")).rewritePath("/products/?(?<remaining>.*)", "/${remaining}")).uri("lb://" + productServiceId))
 
-                                                .
-                                        rewritePath("/products/?(?<remaining>.*)", "/${remaining}"))
-                                .uri(productServiceId))
-                .route("cart-order-route", route ->
-                        route.path("/cart-orders/**")
-                                .filters(f -> f.rewritePath("/cart-orders/?(?<remaining>.*)", "/${remaining}"))
-                                .uri(cartOrderServiceId)
-                )
+                .route("cart-order-route", route -> route.path("/cart-orders/**").filters(f ->
+                        f.rewritePath("/cart-orders/?(?<remaining>.*)", "/${remaining}").retry(retryConfig -> retryConfig.setRetries(3).setMethods(HttpMethod.GET, HttpMethod.POST).setBackoff(Duration.ofMillis(100), Duration.ofMillis(1000), 2, true))
+                ).uri("lb://" + cartOrderServiceId))
 
+                .route("users-route", route -> route.path("/users/**").filters(f ->
+                        f.rewritePath("/users/?(?<remaining>.*)", "/${remaining}")
+                ).uri("lb://" + usersServiceId))
+
+                .route("inventory-route", route -> route.path("/inventories/**").filters(f ->
+                        f.rewritePath("/inventories/?(?<remaining>.*)", "/${remaining}")
+                ).uri("lb://" + inventoryServiceId))
 
                 .build();
     }
 
-}
+//    @Bean
+//    public KeyResolver keyResolver() {
+//        return exchange -> Mono.just(exchange.getRequest().getHeaders().getFirst("user"));
+//    }
 
+
+//    @Bean
+//    public RedisRateLimiter redisRateLimiter(){
+//        return new RedisRateLimiter(4,4,1);
+//    }
+
+}

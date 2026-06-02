@@ -1,5 +1,7 @@
 package com.ecom.easybuy.cart_order.controller;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,9 +23,13 @@ import com.ecom.easybuy.cart_order.service.CartService;
 @RestController
 @Validated
 @RequestMapping("/api/carts")
+@RefreshScope
 public class CartController {
 
     private final CartService cartService;
+
+    @Value("${app.msg}")
+    private String appMsg;
 
     public CartController(CartService cartService) {
         this.cartService = cartService;
@@ -53,6 +59,11 @@ public class CartController {
     public ResponseEntity<Void> clearCart(@PathVariable String userId) {
         cartService.clearCart(userId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<String> getImagekitFolder() {
+        return ResponseEntity.ok(appMsg);
     }
 }
 

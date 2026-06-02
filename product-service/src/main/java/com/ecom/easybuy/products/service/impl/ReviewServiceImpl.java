@@ -5,8 +5,8 @@ import com.ecom.easybuy.products.dto.ReviewDto;
 import com.ecom.easybuy.products.entity.Product;
 import com.ecom.easybuy.products.entity.Review;
 import com.ecom.easybuy.products.exception.ResourceNotFoundException;
-import com.ecom.easybuy.products.repository.ProductRepository;
-import com.ecom.easybuy.products.repository.ReviewRepository;
+import com.ecom.easybuy.products.repository.ProductRepo;
+import com.ecom.easybuy.products.repository.ReviewRepo;
 import com.ecom.easybuy.products.service.ReviewService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 @Transactional
 public class ReviewServiceImpl implements ReviewService {
 
-    private final ReviewRepository reviewRepo;
-    private final ProductRepository productRepo;
+    private final ReviewRepo reviewRepo;
+    private final ProductRepo productRepo;
 
-    public ReviewServiceImpl(ReviewRepository reviewRepo, ProductRepository productRepo) {
+    public ReviewServiceImpl(ReviewRepo reviewRepo, ProductRepo productRepo) {
         this.reviewRepo = reviewRepo;
         this.productRepo = productRepo;
     }
@@ -106,4 +106,3 @@ public class ReviewServiceImpl implements ReviewService {
         return dto;
     }
 }
-

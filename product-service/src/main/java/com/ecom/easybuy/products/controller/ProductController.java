@@ -4,22 +4,28 @@ import com.ecom.easybuy.products.dto.PagedResponse;
 import com.ecom.easybuy.products.dto.ProductDto;
 import com.ecom.easybuy.products.dto.ReviewDto;
 import com.ecom.easybuy.products.service.ProductService;
-import com.ecom.easybuy.products.utils.ProductServiceConstants;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import org.springframework.data.domain.Page;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products")
+@Validated
+@RefreshScope
 public class ProductController {
+
+    @Value("${imagekit.folder}")
+    private  String imageKitFolder;
+
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
@@ -28,12 +34,10 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<PagedResponse<ProductDto>> getAllProducts(
-            @RequestParam(defaultValue = ProductServiceConstants.DEFAULT_PAGE + "") int page,
-            @RequestParam(defaultValue = ProductServiceConstants.DEFAULT_SIZE + "") int size,
-            @RequestParam(defaultValue = ProductServiceConstants.DEFAULT_SORT_BY) String sortBy,
-            @RequestParam(defaultValue = ProductServiceConstants.DEFAULT_SORT_DIR) String sortDir
+            @RequestParam(defaultValue = "0") @Min(value = 0, message = "page must be greater than or equal to 0") int page,
+            @RequestParam(defaultValue = "12") @Min(value = 1, message = "size must be greater than 0") @Max(value = 100, message = "size must be at most 100") int size
     ) {
-        return ResponseEntity.ok(productService.getAllProducts(page, size, sortBy, sortDir));
+        return ResponseEntity.ok(productService.getAllProducts(page, size));
     }
 
     @GetMapping("/{productId}")
@@ -92,5 +96,10 @@ public class ProductController {
     @GetMapping("/{productId}/images")
     public ResponseEntity<java.util.List<String>> getProductImages(@PathVariable UUID productId) {
         return ResponseEntity.ok(productService.getProductImages(productId));
+    }
+
+    @GetMapping("/imgkit-folder")
+    public ResponseEntity<String> getImageKitFolder() {
+        return ResponseEntity.ok(imageKitFolder);
     }
 }

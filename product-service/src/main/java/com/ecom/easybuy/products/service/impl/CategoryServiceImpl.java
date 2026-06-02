@@ -1,16 +1,14 @@
 package com.ecom.easybuy.products.service.impl;
 
 import com.ecom.easybuy.products.dto.CategoryDto;
-import com.ecom.easybuy.products.dto.ProductDto;
 import com.ecom.easybuy.products.entity.Category;
 import com.ecom.easybuy.products.exception.ResourceNotFoundException;
-import com.ecom.easybuy.products.repository.CategoryRepository;
-import com.ecom.easybuy.products.repository.ProductRepository;
+import com.ecom.easybuy.products.repository.CategoryRepo;
+import com.ecom.easybuy.products.repository.ProductRepo;
 import com.ecom.easybuy.products.service.CategoryService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -19,10 +17,10 @@ import java.util.stream.Collectors;
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
 
-    private final CategoryRepository categoryRepo;
-    private final ProductRepository productRepo;
+    private final CategoryRepo categoryRepo;
+    private final ProductRepo productRepo;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepo, ProductRepository productRepo) {
+    public CategoryServiceImpl(CategoryRepo categoryRepo, ProductRepo productRepo) {
         this.categoryRepo = categoryRepo;
         this.productRepo = productRepo;
     }
@@ -74,20 +72,20 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryDto dto = new CategoryDto();
         dto.setId(category.getId());
         dto.setTitle(category.getTitle());
-        dto.setProducts(category.getProducts() == null ? new ArrayList<>() : category.getProducts().stream().map(product -> {
-            var productDto = new ProductDto();
-            productDto.setId(product.getId());
-            productDto.setTitle(product.getTitle());
-            productDto.setShortDesc(product.getShortDesc());
-            productDto.setLongDesc(product.getLongDesc());
-            productDto.setPrice(product.getPrice());
-            productDto.setDiscount(product.getDiscount());
-            productDto.setLive(product.getLive());
-            productDto.setProductImages(product.getProductImages() == null ? new ArrayList<>() : new ArrayList<>(product.getProductImages()));
-            productDto.setCategories(new ArrayList<>());
-            productDto.setReviews(new ArrayList<>());
-            return productDto;
-        }).collect(Collectors.toList()));
+//        dto.setProducts(category.getProducts() == null ? new ArrayList<>() : category.getProducts().stream().map(product -> {
+//            var productDto = new com.ecom.easybuy.products.dto.ProductDto();
+//            productDto.setId(product.getId());
+//            productDto.setTitle(product.getTitle());
+//            productDto.setShortDesc(product.getShortDesc());
+//            productDto.setLongDesc(product.getLongDesc());
+//            productDto.setPrice(product.getPrice());
+//            productDto.setDiscount(product.getDiscount());
+//            productDto.setLive(product.getLive());
+//            productDto.setProductImages(product.getProductImages() == null ? new ArrayList<>() : new ArrayList<>(product.getProductImages()));
+//            productDto.setCategories(new ArrayList<>());
+//            productDto.setReviews(new ArrayList<>());
+//            return productDto;
+//        }).collect(Collectors.toList()));
         return dto;
     }
 }

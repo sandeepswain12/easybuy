@@ -5,9 +5,19 @@ spring:
   application:
     name: CONFIG-SERVER
 
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${GITHUB_URL}
+          username: ${GITHUB_USERNAME}
+          password: ${GITHUB_TOKEN}
+          defaultLabel: ${GITHUB_LABEL}
+
 eureka:
   instance:
     preferIpAddress: true
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+

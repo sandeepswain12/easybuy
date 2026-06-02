@@ -1,17 +1,17 @@
 package com.ecom.easybuy.products.service;
 
-import java.util.List;
-import java.util.UUID;
-
 import com.ecom.easybuy.products.dto.PagedResponse;
 import com.ecom.easybuy.products.dto.ProductDto;
 import com.ecom.easybuy.products.dto.ReviewDto;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.UUID;
+
 public interface ProductService {
 
     //all products in paginated format
-    PagedResponse<ProductDto> getAllProducts(int page, int size, String sortBy, String sortDir);
+    PagedResponse<ProductDto> getAllProducts(int page, int size);
 
     //product dto by product id
     ProductDto getProductById(UUID productId);
@@ -44,4 +44,3 @@ public interface ProductService {
     //Get images of product
     List<String> getProductImages(UUID productId);
 }
-

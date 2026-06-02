@@ -2,6 +2,9 @@ spring:
   application:
     name: API-GATEWAY
 
+  config:
+    import: configserver:${CONFIG_SERVER_URL:http://localhost:8086}
+
   cloud:
     gateway:
       server:
@@ -35,10 +38,10 @@ eureka:
     preferIpAddress: true
 
 
-
-product:
-  service:
-    id: lb://PRODUCT-SERVICE
-cartorder:
-  service:
-    id: lb://CART-ORDER-SERVICE
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowSize: 10
+      permittedNumberOfCallsInHalfOpenState: 2
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10000
